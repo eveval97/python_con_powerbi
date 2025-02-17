@@ -35,12 +35,12 @@ for city in cities:
         print(f"No se encontró la ubicación para {city}")
         continue
 
-    # Separar ciudad y país
+    # Separamos ciudad y país
     loc_split = city.split(",")
     city_name = loc_split[0].strip()
     country = loc_split[-1].strip() if len(loc_split) > 1 else ""
 
-    # Parámetros de la API
+    # Estos son los parámetros de la API
     params = {
         "arrival_date": arrival_date,
         "departure_date": departure_date,
@@ -50,7 +50,7 @@ for city in cities:
         "languagecode": "es"
     }
 
-    # Solicitud GET a la API
+    # Se hace la solicitud GET a la API
     response = requests.get(url, headers=headers, params=params)
     result_data = response.json()
 
@@ -59,7 +59,7 @@ for city in cities:
 
     hoteles = result_data.get("data", {}).get("result", [])
     for hotel in hoteles:
-        # Extraer ID y nombre del hotel
+        # Extraemos el ID y nombre del hotel
         hotel_id = hotel.get("hotel_id")
         hotel_name = hotel.get("hotel_name_trans")
 
@@ -68,7 +68,7 @@ for city in cities:
         gross_amount_value = composite_price_breakdown.get("gross_amount", {}).get("value")
 
         try:
-            # Convertir a float, redondear y hacer cast a entero
+            # Convertimos a float, redondear y hacer cast a entero
             gross_amount_value = int(round(float(str(gross_amount_value).replace(",", ""))))
         except (ValueError, TypeError):
             gross_amount_value = None  # Si falla, asigna None
@@ -91,8 +91,6 @@ for city in cities:
         data_list.append(record)
 
     time.sleep(1)
-
-# Crear DataFrame
 fact_hotels = pd.DataFrame(data_list)
 fact_hotels.set_index("hotel_name", inplace=True)
 
@@ -111,7 +109,6 @@ ORDER BY city, gross_amount ASC;
 
 hotels_prices = pysqldf(q)
 
-# Asegurar que los valores sean enteros y sin decimales
 hotels_prices["gross_amount"] = hotels_prices["gross_amount"].astype("Int64")
 
 print(hotels_prices)

@@ -1,0 +1,10 @@
+kaggle
+pandas
+numpy
+matplotlib
+seaborn
+scipy
+flatten-json
+pandasql
+geopy
+scikit-learn
